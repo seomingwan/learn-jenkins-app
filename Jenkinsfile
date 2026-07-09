@@ -46,6 +46,7 @@ pipeline {
                 sh '''
                     npm install netlify-cli@20.1.1
                     npx netlify -v
+                    npx netlify deploy --dir=build --prod --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID
                 '''
             }
         }
