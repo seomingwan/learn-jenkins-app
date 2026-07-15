@@ -35,18 +35,18 @@ pipeline {
             }
         }
             
-        stage('5. s3 Bucket Upload Test') {
-            
+        stage('5. AWS S3 Sync') {
             environment {
-                AWS_S3_BUCKET = 'unstuck-bucket'
+                // ⚠️ 여기에 본인의 AWS S3 버킷명을 정확히 적어주세요!
+                AWS_S3_BUCKET = 'unstuck-bucket' 
             }
-
             steps {
+                // ⚠️ 젠킨스에 등록해 둔 AWS 자격증명 ID가 'my_aws'인지 'my-aws'인지 확인 후 맞춰주세요!
                 withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
+                        echo '🚀 S3 버킷으로 빌드 결과물 동기화를 시작합니다.'
                         aws --version
-                        echo "Hello S3!" > index.html
-                        aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                        aws s3 sync public s3://$AWS_S3_BUCKET
                     '''
                 }
             }
@@ -56,6 +56,12 @@ pipeline {
     post {
         always {
             echo '테스트 빌드가 완료되었습니다.'
+        }
+        success {
+            echo '🎉 축하합니다! 모든 빌드 및 S3 동기화 배포 과정이 정상 완료되었습니다.'
+        }
+        failure {
+            echo '❌ 빌드 또는 S3 전송 도중 에러가 발생했습니다. 로그를 체크하세요.'
         }
     }
 }
