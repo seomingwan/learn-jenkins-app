@@ -1,0 +1,17 @@
+-------------------------------------------- Jenkins 와 S3 연동 --------------------------------------------
+
+# 1. 젠킨스 도커 컨테이너 내부로 '루트(root) 권한'으로 접속합니다.
+# (컨테이너 이름이 다를 수 있으니, 작동 안 하면 docker ps로 이름을 확인해 주세요)
+sudo docker exec -it -u 0 컨테이너먕 bash
+
+# 2. 컨테이너 내부에서 AWS CLI 설치용 도구 다운로드
+apt-get update && apt-get install -y unzip curl
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
+
+# 3. 설치가 잘 되었는지 확인
+aws --version
+
+# 4. 컨테이너 밖으로 탈출
+exit
