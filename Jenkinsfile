@@ -23,6 +23,17 @@ pipeline {
                 echo '🚀 [성공] GitHub와 Jenkins 연동이 정상적으로 완료되었습니다!'
             }
         }
+            
+        stage('4. s3 Bucket Connection Test') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        aws --version
+                        aws s3 ls
+                    '''
+                }
+            }
+        }
     }
 
     post {
