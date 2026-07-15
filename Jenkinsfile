@@ -1,58 +1,33 @@
 pipeline {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-            reuseNode true
-        }
-    }
+    agent any
 
     stages {
-        stage('Build') {
-
+        stage('1. GitHub Clone Test') {
             steps {
-                sh '''
-                    ls -la
-                    node -v
-                    npm -v
-                    npm ci
-                    npm run build
-                    ls -la
-                '''
-            }
-        }
-        
-        stage ('Test') {
-            steps {
-                echo 'Test stage'
-                sh '''
-                    test -f build/index.html
-                    npm test
-                '''
+                echo '✅ GitHub로부터 소스코드를 성공적으로 가져왔습니다!'
+                // 현재 폴더에 GitHub 파일들이 잘 들어왔는지 목록 출력
+                sh 'ls -la' 
             }
         }
 
-        stage ('E2E') {
+        stage('2. Simple System Check') {
             steps {
-                sh '''
-                    npm install serve
-                    npx serve -s build & sleep 10
-                    npx playwright test --reporter=html
-                '''
+                echo '✅ Jenkins 서버 내부의 Java 및 AWS CLI 설치 여부를 테스트합니다.'
+                sh 'java -version'
+                sh 'aws --version'
             }
         }
 
-        stage ('Deploy') {
+        stage('3. Connection Success') {
             steps {
-                sh '''
-                    npm install netlify-cli@20.1.1
-                '''
+                echo '🚀 [성공] GitHub와 Jenkins 연동이 정상적으로 완료되었습니다!'
             }
         }
     }
 
     post {
         always {
-            junit 'jest-results/junit.xml'
+            echo '테스트 빌드가 완료되었습니다.'
         }
     }
 }
