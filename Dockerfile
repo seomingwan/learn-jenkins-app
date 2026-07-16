@@ -1,2 +1,2 @@
 FROM nginx:1.27-alpine
-COPY build /usr/share/nginx/html
+COPY . /usr/share/nginx/html
