@@ -5,7 +5,7 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'ap-northeast-2' // AWS 기본 리전 설정
         AWS_ECS_CLUSTER = 'focused-frog-3wzw11' // ECS 클러스터 이름
-        AWS_ECS_SERVICE_PROD = 'focused-frog-3wzw11-prod' // ECS 서비스 이름
+        AWS_ECS_SERVICE_PROD = 'LearnJenkinsApp-Service-Prod ' // ECS 서비스 이름
         AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition-Prod' // ECS 태스크 정의 이름
     }
 
