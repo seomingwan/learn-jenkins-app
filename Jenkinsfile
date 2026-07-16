@@ -4,19 +4,9 @@ pipeline {
     
     environment {
         AWS_DEFAULT_REGION = 'ap-northeast-2' // AWS 기본 리전 설정
-        AWS_S3_BUCKET = 'unstuck-bucket' 
     }
 
     stages {
-        // stage('Deploy AWS') {
-        //     agent {
-        //         docker {
-        //             image 'amazon/aws-cli'
-        //             reuseNode true
-        //             args "--entrypoint ''"
-        //         }
-        //     }
-        // }
 
         // steps {
         //     withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
@@ -60,19 +50,6 @@ pipeline {
                 }
             }
         }
-            
-        // stage('5. AWS S3 Sync') {
-        //     steps {
-        //         // ⚠️ 젠킨스에 등록해 둔 AWS 자격증명 ID가 'my_aws'인지 'my-aws'인지 확인 후 맞춰주세요!
-        //         withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-        //             sh '''
-        //                 echo '🚀 S3 버킷으로 빌드 결과물 동기화를 시작합니다.'
-        //                 aws --version
-        //                 aws s3 sync public s3://$AWS_S3_BUCKET
-        //             '''
-        //         }
-        //     }
-        // }
 
     }
 
