@@ -9,13 +9,6 @@ pipeline {
 
     stages {
         stage('AWS') {
-            agent {
-                docker { 
-                    image 'amazon/aws-cli'
-                    // aws-cli 이미지는 기본적으로 실행 후 바로 종료되므로 엔트리포인트 무력화
-                    args "--entrypoint=''" 
-                }
-            }
             steps {
                 sh 'aws --version'
             }
@@ -89,15 +82,4 @@ pipeline {
 
     }
 
-    post {
-        always {
-            echo '테스트 빌드가 완료되었습니다.'
-        }
-        success {
-            echo '🎉 축하합니다! 모든 빌드 및 S3 동기화 배포 과정이 정상 완료되었습니다.'
-        }
-        failure {
-            echo '❌ 빌드 또는 S3 전송 도중 에러가 발생했습니다. 로그를 체크하세요.'
-        }
-    }
 }
