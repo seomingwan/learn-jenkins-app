@@ -10,6 +10,18 @@ pipeline {
     }
 
     stages {
+
+        stage('Build Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                        apt-get install -y docker
+                        docker build -t myjenkinsapp .
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to AWS'){
             steps {
                 withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
