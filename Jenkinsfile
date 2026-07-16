@@ -6,7 +6,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                withCredentials([usernamePassword(credentialsId: 'my-jenkins', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         echo '🐳 도커 빌드 환경 변수를 보정하고 빌드를 시작합니다.'
                         
