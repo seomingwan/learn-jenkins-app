@@ -7,7 +7,17 @@ pipeline {
     }
 
     stages {
+        
         stage('Deploy to AWS'){
+            
+            agent {
+                docker {
+                    image 'amazon/aws-cli' // AWS CLI가 설치된 Docker 이미지 사용
+                    reuseNode true // 노드 재사용 설정
+                    args "--entrypoint=''"
+                }
+            }
+
             steps {
                 withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
