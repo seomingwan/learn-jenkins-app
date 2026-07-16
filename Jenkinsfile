@@ -1,7 +1,47 @@
 pipeline {
+     // 전역 에이전트를 사용하지 않음으로써 컨테이너 중첩 방지
     agent any
+    
+    environment {
+        AWS_DEFAULT_REGION = 'ap-northeast-2' // AWS 기본 리전 설정
+        AWS_S3_BUCKET = 'unstuck-bucket' 
+    }
 
     stages {
+        stage('AWS') {
+            agent {
+                docker { 
+                    image 'amazon/aws-cli'
+                    // aws-cli 이미지는 기본적으로 실행 후 바로 종료되므로 엔트리포인트 무력화
+                    args "--entrypoint=''" 
+                }
+            }
+            steps {
+                sh 'aws --version'
+            }
+        }
+
+        // stage('Deploy AWS') {
+        //     agent {
+        //         docker {
+        //             image 'amazon/aws-cli'
+        //             reuseNode true
+        //             args "--entrypoint ''"
+        //         }
+        //     }
+        // }
+
+        // steps {
+        //     withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+        //         sh '''
+        //             aws --version
+        //             aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+        //         '''
+        //     }
+        // }
+
+        /////////////////////////////////////////////////////////////////////////////////
+
         stage('1. GitHub Clone Test') {
             steps {
                 echo '✅ GitHub로부터 소스코드를 성공적으로 가져왔습니다!'
@@ -29,28 +69,24 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        aws s3 ls
                     '''
                 }
             }
         }
             
-        stage('5. AWS S3 Sync') {
-            environment {
-                // ⚠️ 여기에 본인의 AWS S3 버킷명을 정확히 적어주세요!
-                AWS_S3_BUCKET = 'unstuck-bucket' 
-            }
-            steps {
-                // ⚠️ 젠킨스에 등록해 둔 AWS 자격증명 ID가 'my_aws'인지 'my-aws'인지 확인 후 맞춰주세요!
-                withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                        echo '🚀 S3 버킷으로 빌드 결과물 동기화를 시작합니다.'
-                        aws --version
-                        aws s3 sync public s3://$AWS_S3_BUCKET
-                    '''
-                }
-            }
-        }
+        // stage('5. AWS S3 Sync') {
+        //     steps {
+        //         // ⚠️ 젠킨스에 등록해 둔 AWS 자격증명 ID가 'my_aws'인지 'my-aws'인지 확인 후 맞춰주세요!
+        //         withCredentials([usernamePassword(credentialsId: 'my_aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+        //             sh '''
+        //                 echo '🚀 S3 버킷으로 빌드 결과물 동기화를 시작합니다.'
+        //                 aws --version
+        //                 aws s3 sync public s3://$AWS_S3_BUCKET
+        //             '''
+        //         }
+        //     }
+        // }
+
     }
 
     post {
