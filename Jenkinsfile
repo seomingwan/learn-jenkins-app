@@ -2,6 +2,11 @@ pipeline {
      // 전역 에이전트를 사용하지 않음으로써 컨테이너 중첩 방지
     agent any
 
+    environment {
+        REACT_APP_VERSION = '1.0.${BUILD_ID}'
+        APP_NAME = 'myjenkinsapp'
+    }
+
     stages {
 
         stage('Build Docker Image') {
@@ -18,7 +23,7 @@ pipeline {
                         docker ps
                         
                         # 3. 이제 안전하게 도커 이미지를 빌드합니다.
-                        docker build -t myjenkinsapp .
+                        docker build -t $APP_NAME:$REACT_APP_VERSION .
                     '''
                 }
             }
