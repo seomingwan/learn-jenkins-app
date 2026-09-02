@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker {
             image 'node:18-alpine'
-            args '-u root'
             reuseNode true
         }
     }
@@ -26,7 +25,7 @@ pipeline {
                 echo 'Test stage'
                 sh '''
                     test -f build/index.html
-                    npm test -- --watchAll=false
+                    npm test
                 '''
             }
         }
@@ -39,11 +38,4 @@ pipeline {
         // }
 
     }
-
-    post {
-        always {
-            junit allowEmptyResults: true, testResults: 'test-result/junit.xml'
-        }
-    }
-
 }
