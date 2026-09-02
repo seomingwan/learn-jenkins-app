@@ -42,8 +42,7 @@ pipeline {
 
     post {
         always {
-            // 생성된 xml을 젠킨스 리포트로 등록 (동일하게 사용)
-            junit 'test-result/junit.xml'
+            junit allowEmptyResults: true, testResults: 'test-result/junit.xml'
         }
     }
 
